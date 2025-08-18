@@ -1,0 +1,53 @@
+queries:
+  # Direct funding acknowledgements
+  funding_statement: "funding statement acknowledgement grant support financial assistance"
+  grant_acknowledgment: "grant number award identifier project code funding reference"
+  financial_support: "financial support monetary assistance research funding sponsored by"
+  
+  # Acknowledgements sections
+  acknowledgements: "acknowledgements section funding support thanks gratitude"
+  author_acknowledgements: "author acknowledgements contributor thanks funding declaration"
+  
+  # Research support
+  research_funding: "research funded supported by grant award scholarship fellowship"
+  project_support: "project supported funded grant contract cooperative agreement"
+  institutional_support: "institutional support university funding departmental grant internal funding"
+  
+  # Government and public funding
+  government_funding: "government funded federal state provincial national research council agency"
+  public_funding: "public funding taxpayer funded government grant national institute ministry"
+  
+  # Foundation and charity funding
+  foundation_support: "foundation trust charity philanthropic donation endowment fund"
+  nonprofit_funding: "nonprofit organization charitable foundation trust fund donation"
+  
+  # Specific grant types
+  research_grant: "research grant award number identifier code reference RG"
+  fellowship_award: "fellowship award postdoctoral doctoral scholarship stipend"
+  equipment_grant: "equipment grant infrastructure funding facility support instrumentation"
+  travel_grant: "travel grant conference support meeting attendance funding"
+  
+  # Contract and agreement funding
+  contract_funding: "contract number agreement identifier service contract research agreement"
+  cooperative_agreement: "cooperative agreement collaboration contract joint funding partnership"
+  
+  # Disclosure statements
+  funding_disclosure: "funding disclosure financial disclosure competing interests declaration"
+  conflict_interest: "conflict of interest financial interest disclosure statement declaration"
+  
+  # Support acknowledgements
+  acknowledge_support: "acknowledge support grateful thanks appreciation recognize assistance"
+  thank_funders: "thank funders gratitude appreciate support acknowledge contribution"
+  
+  # Grant identifiers and numbers
+  grant_identifier: "grant number award number project number reference number identifier code"
+  funding_reference: "funding reference grant code award identifier project identifier"
+  
+  # Time-based funding
+  multi_year_grant: "multi-year grant long-term funding sustained support continuing grant"
+  seed_funding: "seed funding startup grant initial support pilot funding exploratory grant"
+  
+  # Specific funding mechanisms
+  block_grant: "block grant core funding institutional award unrestricted funds"
+  targeted_funding: "targeted funding specific purpose designated funds earmarked support"
+  matching_funds: "matching funds cost-share in-kind contribution leveraged funding"

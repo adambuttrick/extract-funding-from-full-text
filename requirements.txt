@@ -1,0 +1,10 @@
+pydantic>=2.0.0
+torch>=2.0.0
+requests>=2.31.0
+pyyaml>=6.0
+pylate>=0.1.0
+langextract>=1.0.8
+python-dotenv>=1.0.0
+google-generativeai>=0.3.0
+openai>=1.0.0
+ollama>=0.1.0

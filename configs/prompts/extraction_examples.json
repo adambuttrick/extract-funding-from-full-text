@@ -1,0 +1,49 @@
+[
+  {
+    "text": "This research was funded by the National Institutes of Health through the Pioneer Award program (grant DP1 OD008486). Dr. Smith is a recipient of the Howard Hughes Medical Institute's Investigator Award. We used the services of the National Center for Macromolecular Imaging.",
+    "extractions": [
+      {
+        "class": "funder",
+        "text": "National Institutes of Health"
+      },
+      {
+        "class": "grant_id",
+        "text": "DP1 OD008486",
+        "attributes": {
+          "funder": "National Institutes of Health"
+        }
+      },
+      {
+        "class": "funder",
+        "text": "Howard Hughes Medical Institute"
+      }
+    ]
+  },
+  {
+    "text": "This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No 812345. We acknowledge support from the German Research Foundation (DFG) under Germany's Excellence Strategy – EXC 2020 – 390657997. Data was deposited at EMBL-EBI (accession E-MTAB-1234).",
+    "extractions": [
+      {
+        "class": "funder",
+        "text": "European Union"
+      },
+      {
+        "class": "grant_id",
+        "text": "812345",
+        "attributes": {
+          "funder": "European Union"
+        }
+      },
+      {
+        "class": "funder",
+        "text": "German Research Foundation"
+      },
+      {
+        "class": "grant_id",
+        "text": "EXC 2020 – 390657997",
+        "attributes": {
+          "funder": "German Research Foundation"
+        }
+      }
+    ]
+  }
+]

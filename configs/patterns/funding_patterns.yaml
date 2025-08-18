@@ -1,0 +1,16 @@
+# Regex patterns for identifying funding statements in text
+# These patterns are used to detect paragraphs that likely contain funding information
+
+patterns:
+  - '\backnowledg\w*\s+(?:funding|financial|support)'
+  - '\bfund\w*\s+(?:by|from|through)'
+  - '\bsupport\w*\s+(?:by|from|through)'
+  - '\bgrant\w*\s+(?:from|by|number|no\.?|#)'
+  - '\baward\w*\s+(?:from|by|number|no\.?|#)'
+  - '\bproject\s+(?:number|no\.?|#)'
+  - '\bcontract\s+(?:number|no\.?|#)'
+  - '\bfinancial\w*\s+support'
+  - '\bresearch\w*\s+(?:fund|support)'
+  - '\bthis\s+(?:work|research|study)\s+(?:was|is)\s+(?:supported|funded)'
+  - '\bgrateful\w*\s+(?:for|to).*(?:fund|support)'
+  - '\bthank\w*\s+(?:for|to).*(?:fund|support)'
