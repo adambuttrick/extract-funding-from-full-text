@@ -198,7 +198,7 @@ The `--normalize` flag attemtps to normalize the extracted funding statement by:
 
 ## Notes on Input and Markdown Conversion
 
-This tool processes markdown files as input. When converting PDF documents to markdown, the quality and structure of the output can vary significantly depending on the conversion library used and the source document format. Different libraries excel at different document types:
+This tool processes markdown files as input. When converting PDF documents to markdown, the quality and structure of the output can vary significantly depending on the conversion library used and the source document format. Some options:
 
 ### Markdown Conversion Libraries
 
