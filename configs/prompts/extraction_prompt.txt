@@ -1,50 +1,43 @@
-You are an AI assistant specialized in extracting and analyzing funding information from research funding statements. Your task is to carefully read through a given funding statement and extract specific information as requested.
+Your task is to extract all funding entities and their associated grant details from a single funding statement. You must carefully identify each funder, their grant IDs, and any specific, named funding schemes mentioned in the text.
 
-Please follow these steps to extract and present the funding information:
+Return the result as a structured list of objects. Each object in the list should represent a distinct funder and contain the following fields:
+- `funder_name`: The name of the funding organization.
+- `funding_scheme`: The specific name of the funding program or scheme. This field will be `null` in almost all cases.
+- `award_ids`: A list of all grant numbers or identifiers associated with the funder.
+- `award_title`: The title of the award, if explicitly provided.
 
-1. Read the provided funding statement carefully.
+### Detailed Instructions and Rules:
 
-2. Analyze the statement and identify potential funding organizations, grant IDs, and funding schemes or programs. Present your analysis inside <extraction_analysis> tags:
-
-<extraction_analysis>
-- List all potential funding organizations found in the statement:
-  - Quote the relevant part of the statement
-  - Classify as "Include" or "Exclude"
-  - Provide arguments for and against inclusion
-  - Make a final decision with reasoning
-  - Note: Include organizations providing in-kind awards of facilities
-
-- List all potential grant IDs (including their prefixes) found in the statement:
-  - Quote the relevant part of the statement
-  - Classify as "Include" or "Exclude"
-  - Provide arguments for and against inclusion
-  - Make a final decision with reasoning
-  - Note: Ensure that grant IDs are actual ID values, not named awards (e.g., "Distinguished Researcher Award" should not be included as a grant ID)
-
-- List all potential funding schemes or programs found in the statement:
-  - Quote the relevant part of the statement
-  - Note which funding organization they are associated with
-  - Explain why they should not be included in the final extraction
-
-- Summarize the confirmed items for extraction:
-  - List confirmed funding organizations (including those providing in-kind awards of facilities)
-  - List confirmed grant IDs (only actual ID values)
-
-This section can be quite detailed to ensure thorough analysis.
-</extraction_analysis>
-
-3. After your analysis, extract the final information according to these rules:
-   - Include actual funding organizations and those providing in-kind awards of facilities.
-   - Do not include research facilities or acknowledgments unless they are providing in-kind awards.
-   - Include grant IDs whole, including their prefixes. Extract each grant ID only once (no duplicates).
-   - Ensure that grant IDs are actual ID values, not named awards.
-   - Use exact text from the source for all extracted information.
-   - Do not include funding schemes or programs in the final extraction.
-
-
-Remember:
-- Include organizations providing in-kind awards of facilities in the funding_organizations section.
-- Only include actual ID values as grant IDs, not named awards.
-- Funding schemes or programs should not be included in the final extraction, even if they are mentioned in the statement. They should only be noted in your analysis to help identify the actual funding organizations.
-
-Please proceed with your analysis and extraction.
+1.  **Funder Identification (`funder_name`):**
+  *   **Use Literal Names:** Extract the funder's name exactly as it appears in the text. Do not use external knowledge to expand acronyms. For example, if the text says \"NSF\", the `funder_name` is \"NSF\", not \"National Science Foundation\" (unless the full name is also provided in the text).
+  *   **Capture Full Hierarchical Names:** If a funder is described with a specific sub-division, department, or office (e.g., \"US Department of Energy, Fusion Energy Sciences\"), capture this entire, more specific name as the `funder_name`. Do not split parts of it into the `funding_scheme`.
+  *   **Identify All Involved Parties:** In complex statements, multiple entities may be considered funders.
+      *   For phrases like \"...carried out within the framework of the **EUROfusion Consortium**, funded by the **European Union**...\", both \"EUROfusion Consortium\" and \"European Union\" should be extracted as separate funders.
+      *   Extract organizations mentioned in related disclaimers, even if they are being absolved of responsibility (e.g., from \"...Neither the European Union nor the **European Commission** can be held responsible...\", extract \"European Commission\" as a funder).
+  *   **Consolidate Duplicates:** If the exact same funder is mentioned multiple times, create only one object for it and aggregate all its associated `award_ids`.
+  
+  2.  **Funding Scheme (`funding_scheme`):**
+  *   **This is a critical instruction. This field must be `null` in the vast majority of cases.**
+  *   This field is reserved **ONLY** for the **proper name** of a specific, standalone funding program that is clearly distinct from the funder's name and its internal structure.
+  *   **Crucial Exclusions:** The following are **NOT** funding schemes and must result in a `null` value:
+      *   **Generic Terms:** \"grant\", \"project\", \"award\", \"support\", \"funding\", \"fellowship\", \"scholarship\", \"contract\", \"Open Access funding\".
+      *   **Parts of a Funder's Name:** A program name that is part of a funder's hierarchical description is part of the `funder_name`, not the `funding_scheme`.
+          *   *Example*: For \"US Department of Energy, Fusion Energy Sciences\", the `funder_name` is \"US Department of Energy, Fusion Energy Sciences\" and `funding_scheme` is `null`. \"Fusion Energy Sciences\" is NOT a scheme.
+      *   **Funding Mechanisms:** A program name that describes the mechanism through which funding is delivered is not a scheme.
+          *   *Example*: For \"...funded by the European Union via the Euratom Research and Training Programme...\", \"Euratom Research and Training Programme\" is NOT a scheme and should be ignored. The `funder_name` is \"European Union\" and its `funding_scheme` is `null`.
+          
+  3.  **Award IDs (`award_ids`):**
+  *   Extract all alphanumeric codes that represent grant numbers, contract numbers, or project identifiers.
+  *   Accurately associate each ID with its correct funder. For example, in \"...EUROfusion Consortium... (Grant Agreement No 101052200...)\", \"101052200\" should be associated with \"EUROfusion Consortium\".
+  *   A single funder can have multiple `award_ids`. Collect them all into a single list for that funder.
+  
+  4.  **Award Title (`award_title`):**
+  *   Only extract a value for this field if a specific title for the grant or project is explicitly stated, typically in quotation marks.
+  *   *Example*: For \"...under the contract No. APVV-15-0604 entitled 'Reduction of fecundity...'\", the `award_title` would be 'Reduction of fecundity...'.
+  *   In most cases, this field will be `null`.
+  
+  5.  **General Approach:**
+  *   Parse the entire statement carefully, paying close attention to prepositions like \"by\", \"via\", and \"within\".
+  *   Create one object per unique funder identified.
+  *   Aggregate all awards for a single funder into its corresponding `award_ids` list.
+  *   Do not extract acknowledgements to individuals as funders.
