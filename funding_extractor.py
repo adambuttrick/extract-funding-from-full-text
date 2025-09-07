@@ -8,7 +8,8 @@ from typing import Dict, List, Optional, Any
 
 from models import (
     FundingStatement,
-    StructuredEntity,
+    FunderEntity,
+    ExtractionResult,
     DocumentResult,
     ProcessingResults,
     ProcessingParameters
@@ -170,13 +171,13 @@ def process_markdown_file(
         unique_statements = list(
             set(stmt.statement for stmt in result.funding_statements))
 
-        entities = []
+        extraction_results = []
         for statement in unique_statements:
             if args.verbose:
                 print(f"  Extracting entities from statement...")
 
             try:
-                extracted = extract_structured_entities(
+                extraction_result = extract_structured_entities(
                     funding_statement=statement,
                     provider=ModelProvider(args.provider),
                     model_id=args.model,
@@ -189,17 +190,18 @@ def process_markdown_file(
                     examples_file=args.examples_file,
                     custom_config_dir=args.config_dir
                 )
-                entities.extend(extracted)
+                extraction_results.append(extraction_result)
             except Exception as e:
                 print(f"  Warning: Entity extraction failed: {e}")
 
-        result.structured_entities = entities
+        result.extraction_results = extraction_results
 
         if args.verbose:
-            print(f"  Extracted {len(entities)} structured entities")
+            total_funders = sum(len(r.funders) for r in extraction_results)
+            print(f"  Extracted {total_funders} funders from {len(extraction_results)} statements")
     else:
-        if not hasattr(result, 'structured_entities') or result.structured_entities is None:
-            result.structured_entities = []
+        if not hasattr(result, 'extraction_results') or result.extraction_results is None:
+            result.extraction_results = []
 
     return result
 
@@ -335,7 +337,7 @@ def main():
     print(f"Files with funding: {results.summary.get('files_with_funding', 0)}")
     print(f"Total statements: {results.summary.get('total_statements', 0)}")
     if not args.skip_structured:
-        print(f"Total entities: {results.summary.get('total_entities', 0)}")
+        print(f"Total funders: {results.summary.get('total_funders', 0)}")
     print(f"\nResults saved to: {output_file}")
 
 

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import langextract as lx
 
-from models import StructuredEntity
+from models import FunderEntity, ExtractionResult
 from providers import ModelProvider, get_provider_config
 from config_loader import load_extraction_prompt, load_extraction_examples
 
@@ -59,7 +59,7 @@ def extract_structured_entities(
     prompt_file: Optional[str] = None,
     examples_file: Optional[str] = None,
     custom_config_dir: Optional[str] = None,
-) -> List[StructuredEntity]:
+) -> ExtractionResult:
     config = get_provider_config(provider)
     
     if model_id is None:
@@ -129,48 +129,57 @@ def extract_structured_entities(
         with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
             future = executor.submit(lx.extract, **extract_params)
             result = future.result(timeout=timeout)
-            return _convert_extractions_to_entities(result.extractions)
+            return _convert_extractions_to_result(result.extractions, funding_statement)
     except concurrent.futures.TimeoutError:
         print(f"Request timed out after {timeout} seconds, returning empty result")
-        return []
+        return ExtractionResult(statement=funding_statement, funders=[])
     except Exception as e:
         raise e
 
 
-def _convert_extractions_to_entities(
+def _convert_extractions_to_result(
     extractions: List[lx.data.Extraction],
-) -> List[StructuredEntity]:
+    funding_statement: str
+) -> ExtractionResult:
     funders_map = {}
+    
     for extraction in extractions:
-        if extraction.extraction_class == "funder":
+        if extraction.extraction_class == "funder_name":
             funder_name = extraction.extraction_text
             if funder_name not in funders_map:
-                funders_map[funder_name] = StructuredEntity(
-                    funder=funder_name,
-                    extraction_texts=[extraction.extraction_text],
-                )
-            else:
-                funders_map[funder_name].extraction_texts.append(
-                    extraction.extraction_text
+                funders_map[funder_name] = FunderEntity(
+                    funder_name=funder_name,
+                    funding_scheme=None,
+                    award_ids=[],
+                    award_title=None
                 )
     
     for extraction in extractions:
         attrs = extraction.attributes or {}
         
-        if extraction.extraction_class == "grant_id":
-            funder_name = attrs.get("funder", "")
-            
-            if funder_name in funders_map:
-                funders_map[funder_name].add_grant(extraction.extraction_text)
-                funders_map[funder_name].extraction_texts.append(
-                    extraction.extraction_text
+        if extraction.extraction_class == "award_ids":
+            funder_name = attrs.get("funder_name")
+            if funder_name and funder_name in funders_map:
+                funders_map[funder_name].add_award_id(extraction.extraction_text)
+            elif funder_name:
+                funders_map[funder_name] = FunderEntity(
+                    funder_name=funder_name,
+                    funding_scheme=None,
+                    award_ids=[extraction.extraction_text],
+                    award_title=None
                 )
-            else:
-                entity = StructuredEntity(
-                    funder=funder_name or "Unknown",
-                    extraction_texts=[extraction.extraction_text],
-                )
-                entity.add_grant(extraction.extraction_text)
-                funders_map[funder_name or "Unknown"] = entity
+        
+        elif extraction.extraction_class == "funding_scheme":
+            funder_name = attrs.get("funder_name")
+            if funder_name and funder_name in funders_map:
+                funders_map[funder_name].funding_scheme = extraction.extraction_text
+        
+        elif extraction.extraction_class == "award_title":
+            funder_name = attrs.get("funder_name")
+            if funder_name and funder_name in funders_map:
+                funders_map[funder_name].award_title = extraction.extraction_text
     
-    return list(funders_map.values())
+    return ExtractionResult(
+        statement=funding_statement,
+        funders=list(funders_map.values())
+    )

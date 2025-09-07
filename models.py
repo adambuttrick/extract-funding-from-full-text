@@ -2,10 +2,6 @@ from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
 
 
-class Grant(BaseModel):
-    grant_id: str = Field(description="Grant or award identifier")
-
-
 class FundingStatement(BaseModel):
     statement: str = Field(description="The funding statement text (possibly normalized)")
     original: Optional[str] = Field(default=None, description="Original text before normalization")
@@ -15,19 +11,20 @@ class FundingStatement(BaseModel):
     is_problematic: bool = Field(default=False, description="Whether statement has formatting issues")
 
 
-class StructuredEntity(BaseModel):
-    funder: str = Field(description="Name of the funding organization")
-    grants: List[Grant] = Field(default_factory=list, description="List of grants from this funder")
-    extraction_texts: List[str] = Field(
-        default_factory=list, 
-        description="Original texts where entity was found"
-    )
+class FunderEntity(BaseModel):
+    funder_name: str = Field(description="Name of the funding organization")
+    funding_scheme: Optional[str] = Field(default=None, description="Specific funding program or scheme")
+    award_ids: List[str] = Field(default_factory=list, description="List of grant/award identifiers")
+    award_title: Optional[str] = Field(default=None, description="Title of the award if provided")
     
-    def add_grant(self, grant_id: str) -> None:
-        for grant in self.grants:
-            if grant.grant_id == grant_id:
-                return
-        self.grants.append(Grant(grant_id=grant_id))
+    def add_award_id(self, award_id: str) -> None:
+        if award_id not in self.award_ids:
+            self.award_ids.append(award_id)
+
+
+class ExtractionResult(BaseModel):
+    statement: str = Field(description="The original funding statement text")
+    funders: List[FunderEntity] = Field(default_factory=list, description="List of funders extracted")
 
 
 class DocumentResult(BaseModel):
@@ -36,9 +33,9 @@ class DocumentResult(BaseModel):
         default_factory=list,
         description="Extracted funding statements"
     )
-    structured_entities: List[StructuredEntity] = Field(
+    extraction_results: List[ExtractionResult] = Field(
         default_factory=list,
-        description="Structured entities extracted from statements"
+        description="Structured extraction results with funders"
     )
     
     def has_funding(self) -> bool:
@@ -56,13 +53,20 @@ class DocumentResult(BaseModel):
                 }
                 for stmt in self.funding_statements
             ],
-            'structured_entities': [
+            'extractions': [
                 {
-                    'funder': entity.funder,
-                    'grants': [g.grant_id for g in entity.grants],
-                    'extraction_texts': entity.extraction_texts
+                    'statement': result.statement,
+                    'funders': [
+                        {
+                            'funder_name': funder.funder_name,
+                            'funding_scheme': funder.funding_scheme,
+                            'award_ids': funder.award_ids,
+                            'award_title': funder.award_title
+                        }
+                        for funder in result.funders
+                    ]
                 }
-                for entity in self.structured_entities
+                for result in self.extraction_results
             ]
         }
 
@@ -96,13 +100,17 @@ class ProcessingResults(BaseModel):
         total_files = len(self.results)
         files_with_funding = sum(1 for doc in self.results.values() if doc.has_funding())
         total_statements = sum(len(doc.funding_statements) for doc in self.results.values())
-        total_entities = sum(len(doc.structured_entities) for doc in self.results.values())
+        total_funders = sum(
+            len(result.funders) 
+            for doc in self.results.values() 
+            for result in doc.extraction_results
+        )
         
         self.summary = {
             'total_files': total_files,
             'files_with_funding': files_with_funding,
             'total_statements': total_statements,
-            'total_entities': total_entities
+            'total_funders': total_funders
         }
     
     def to_dict(self) -> Dict[str, Any]:
@@ -133,14 +141,22 @@ class ProcessingResults(BaseModel):
                 )
                 doc.funding_statements.append(stmt)
 
-            for entity_data in doc_data.get('structured_entities', []):
-                entity = StructuredEntity(
-                    funder=entity_data['funder'],
-                    extraction_texts=entity_data.get('extraction_texts', [])
+            for extraction_data in doc_data.get('extractions', []):
+                funders = []
+                for funder_data in extraction_data.get('funders', []):
+                    funder = FunderEntity(
+                        funder_name=funder_data['funder_name'],
+                        funding_scheme=funder_data.get('funding_scheme'),
+                        award_ids=funder_data.get('award_ids', []),
+                        award_title=funder_data.get('award_title')
+                    )
+                    funders.append(funder)
+                
+                result = ExtractionResult(
+                    statement=extraction_data.get('statement', extraction_data.get('text', '')),
+                    funders=funders
                 )
-                for grant_id in entity_data.get('grants', []):
-                    entity.add_grant(grant_id)
-                doc.structured_entities.append(entity)
+                doc.extraction_results.append(result)
             
             results[filename] = doc
         

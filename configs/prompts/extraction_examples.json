@@ -1,47 +1,142 @@
 [
   {
-    "text": "This research was funded by the National Institutes of Health through the Pioneer Award program (grant DP1 OD008486). Dr. Smith is a recipient of the Howard Hughes Medical Institute's Investigator Award. We used the services of the National Center for Macromolecular Imaging.",
+    "text": "Thiede acknowledges the assistance provided by the Population Research Institute at Penn State University, which is supported by the Eunice Kennedy Shriver National Institute on Child Health and Human Development (P2CHD041025). Thiede was also supported by the USDA National Institute of Food and Agriculture Multistate Research Project #PEN04623 (Accession #1013257). GIS support was provided by Philip McDaniel of UNC Libraries.",
     "extractions": [
       {
-        "class": "funder",
-        "text": "National Institutes of Health"
+        "class": "funder_name",
+        "text": "Eunice Kennedy Shriver National Institute on Child Health and Human Development"
       },
       {
-        "class": "grant_id",
-        "text": "DP1 OD008486",
+        "class": "award_ids",
+        "text": "P2CHD041025",
         "attributes": {
-          "funder": "National Institutes of Health"
+          "funder_name": "Eunice Kennedy Shriver National Institute on Child Health and Human Development"
         }
       },
       {
-        "class": "funder",
-        "text": "Howard Hughes Medical Institute"
+        "class": "funder_name",
+        "text": "USDA National Institute of Food and Agriculture"
+      },
+      {
+        "class": "funding_scheme",
+        "text": "Multistate Research Project",
+        "attributes": {
+          "funder_name": "USDA National Institute of Food and Agriculture"
+        }
+      },
+      {
+        "class": "award_ids",
+        "text": "PEN04623",
+        "attributes": {
+          "funder_name": "USDA National Institute of Food and Agriculture",
+          "funding_scheme": "Multistate Research Project"
+        }
+      },
+      {
+        "class": "award_ids",
+        "text": "1013257",
+        "attributes": {
+          "funder_name": "USDA National Institute of Food and Agriculture",
+          "funding_scheme": "Multistate Research Project"
+        }
       }
     ]
   },
   {
-    "text": "This project has received funding from the European Union's Horizon 2020 research and innovation programme under the Marie Skłodowska-Curie grant agreement No 812345. We acknowledge support from the German Research Foundation (DFG) under Germany's Excellence Strategy – EXC 2020 – 390657997. Data was deposited at EMBL-EBI (accession E-MTAB-1234).",
+    "text": "The author(s) disclosed receipt of the following financial support for the research, authorship, and/or publication of this article: This research was funded by the National Institute of Mental Health (R21 MH122010; MPI Quinn and Voisin).",
     "extractions": [
       {
-        "class": "funder",
-        "text": "European Union"
+        "class": "funder_name",
+        "text": "National Institute of Mental Health"
       },
       {
-        "class": "grant_id",
-        "text": "812345",
+        "class": "award_ids",
+        "text": "R21 MH122010",
         "attributes": {
-          "funder": "European Union"
+          "funder_name": "National Institute of Mental Health"
+        }
+      }
+    ]
+  },
+  {
+    "text": "R.A. acknowledges support by the Dutch Research Council (NWO Rubicon 019.202EN.028). The authors thank SURF (www.surf.nl) for the support in using the National Supercomputer Snellius. R.M-A. and R.A-O. thank ANID-Chile for support under FONDECYT N. 1200200. G.P, L.B.A and P.C.T.S would like to thank the support of the French National Center for Scientific Research (CNRS) and the funding from research collaboration agreements with PharmCADD. This work was granted access to the HPC resources of IDRIS and TGCC under the allocations 2022-A0120713456 and | 2023-A0140713456 made by GENCI. We also acknowledge the support of the Centre Blaise Pascal's IT test platform at ENS de Lyon (Lyon, France) for the computer facilities. The platform operates the SIDUS solution developed by Emmanuel Quemener65. S.J.M. acknowledges funding from the European Research Council with the Advanced grant \"COMP-O-CELL\" (101053661).",
+    "extractions": [
+      {
+        "class": "funder_name",
+        "text": "Dutch Research Council (NWO)"
+      },
+      {
+        "class": "award_ids",
+        "text": "Rubicon 019.202EN.028",
+        "attributes": {
+          "funder_name": "Dutch Research Council (NWO)"
         }
       },
       {
-        "class": "funder",
-        "text": "German Research Foundation"
+        "class": "funder_name",
+        "text": "ANID-Chile"
       },
       {
-        "class": "grant_id",
-        "text": "EXC 2020 – 390657997",
+        "class": "award_ids",
+        "text": "FONDECYT N. 1200200",
         "attributes": {
-          "funder": "German Research Foundation"
+          "funder_name": "ANID-Chile"
+        }
+      },
+      {
+        "class": "funder_name",
+        "text": "SURF"
+      },
+      {
+        "class": "funder_name",
+        "text": "French National Center for Scientific Research (CNRS)"
+      },
+      {
+        "class": "funder_name",
+        "text": "PharmCADD"
+      },
+      {
+        "class": "funder_name",
+        "text": "GENCI"
+      },
+      {
+        "class": "award_ids",
+        "text": "2022-A0120713456",
+        "attributes": {
+          "funder_name": "GENCI"
+        }
+      },
+      {
+        "class": "award_ids",
+        "text": "2023-A0140713456",
+        "attributes": {
+          "funder_name": "GENCI"
+        }
+      },
+      {
+        "class": "funder_name",
+        "text": "Centre Blaise Pascal"
+      },
+      {
+        "class": "funder_name",
+        "text": "ENS de Lyon"
+      },
+      {
+        "class": "funder_name",
+        "text": "European Research Council"
+      },
+      {
+        "class": "award_title",
+        "text": "Advanced grant",
+        "attributes": {
+          "funder_name": "European Research Council"
+        }
+      },
+      {
+        "class": "award_ids",
+        "text": "\"COMP-O-CELL\" (101053661)",
+        "attributes": {
+          "funder_name": "European Research Council"
         }
       }
     ]
