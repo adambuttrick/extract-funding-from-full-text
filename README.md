@@ -122,18 +122,30 @@ The tool generates a JSON file with the following structure:
     "document.md": {
       "funding_statements": [
         {
-          "statement": "This work was supported by...",
+          "statement": "This work was supported by NSF grant 12345 and NIH grant 67890.",
           "original": "Original text before normalization",
           "score": 35.2,
           "query": "funding_statement",
           "is_problematic": false
         }
       ],
-      "structured_entities": [
+      "extractions": [
         {
-          "funder": "National Science Foundation",
-          "grants": ["NSF-123456"],
-          "extraction_texts": ["NSF grant NSF-123456"]
+          "statement": "This work was supported by NSF grant 12345 and NIH grant 67890.",
+          "funders": [
+            {
+              "funder_name": "NSF",
+              "funding_scheme": null,
+              "award_ids": ["12345"],
+              "award_title": null
+            },
+            {
+              "funder_name": "NIH",
+              "funding_scheme": null,
+              "award_ids": ["67890"],
+              "award_title": null
+            }
+          ]
         }
       ]
     }
@@ -142,7 +154,7 @@ The tool generates a JSON file with the following structure:
     "total_files": 10,
     "files_with_funding": 8,
     "total_statements": 25,
-    "total_entities": 30
+    "total_funders": 45
   }
 }
 ```
